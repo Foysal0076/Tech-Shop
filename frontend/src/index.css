@@ -8,3 +8,13 @@ main {
 h3 {
   padding: 1rem 0;
 }
+
+h2 {
+  padding: 0.5rem 0;
+  font-size: 1.4rem !important;
+}
+
+h1 {
+  padding: 1rem 0;
+  font-size: 1.8rem !important;
+}
