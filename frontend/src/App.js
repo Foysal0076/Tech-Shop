@@ -5,6 +5,8 @@ import Header from './components/layout/Header'
 import HomeScreen from './screens/HomeScreen'
 import ProductScreen from './screens/ProductScreen'
 import CartScreen from './screens/CartScreen'
+import LoginScreen from './screens/LoginScreen'
+import RegisterScreen from './screens/RegisterScreen'
 
 
 
@@ -18,6 +20,8 @@ function App() {
             <Route exact path='/' component={HomeScreen} />
             <Route exact path='/product/:id' component={ProductScreen} />
             <Route exact path='/cart/:id?' component={CartScreen} />
+            <Route exact path='/login' component={LoginScreen} />
+            <Route exact path='/register' component={RegisterScreen} />
           </Container>
         </main>
         <Footer />
