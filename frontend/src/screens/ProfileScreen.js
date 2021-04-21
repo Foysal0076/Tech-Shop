@@ -21,21 +21,23 @@ const ProfileScreen = ({ history }) => {
     const { userInfo } = useSelector(state => state.userLogin)
     const { success } = useSelector(state => state.userUpdateProfile)
     const { myOrders, loading: loadingOrders, error: errorOrders } = useSelector(state => state.myOrderList)
+    const { success: successOrder } = useSelector(state => state.orderCreate)
 
     useEffect(() => {
         if (!userInfo) {
             history.push('/login')
         } else {
-            if (!user.name || !user) {
+            if (!user || !user.name || success) {
                 dispatch(getUserDetails('profile'))
                 dispatch(listMyOrders())
             } else {
                 setName(user.name)
                 setEmail(user.email)
+                dispatch(listMyOrders())
             }
         }
         console.log('inside')
-    }, [dispatch, history, userInfo, user])
+    }, [dispatch, history, userInfo, user, success])
 
     const submitHandler = (e) => {
         e.preventDefault()
