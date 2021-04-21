@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { productReducers, productDetailsReducers } from './reducers/productReducers'
 import cartReducers from './reducers/cartReducers'
-import { userDetailsterReducer, userListReducer, userLoginReducer, userRegisterReducer, userUpdateProfileReducer } from './reducers/userReducers'
+import { userDeleteReducer, userDetailsterReducer, userListReducer, userLoginReducer, userRegisterReducer, userUpdateProfileReducer, userUpdateReducer } from './reducers/userReducers'
 import { myOrderListReducer, orderCreateReducers, orderDetailsReducers, orderPayReducers } from './reducers/orderReducers'
 
 
@@ -29,6 +29,10 @@ const initialState = {
 
 const middleWare = [thunk]
 
+const devtools = process.env.NODE_ENV === 'production'
+    ? applyMiddleware(...middleWare)
+    : composeWithDevTools(applyMiddleware(...middleWare))
+
 const reducer = combineReducers({
     productList: productReducers,
     productDetails: productDetailsReducers,
@@ -38,15 +42,18 @@ const reducer = combineReducers({
     userDetails: userDetailsterReducer,
     userUpdateProfile: userUpdateProfileReducer,
     users: userListReducer,
+    userDelete: userDeleteReducer,
     orderCreate: orderCreateReducers,
     orderDetails: orderDetailsReducers,
     orderPay: orderPayReducers,
     myOrderList: myOrderListReducer,
+    userUpdate: userUpdateReducer,
 })
 
 const store = createStore(
     reducer,
     initialState,
-    composeWithDevTools(applyMiddleware(...middleWare)))
+    devtools
+)
 
 export default store

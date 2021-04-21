@@ -1,67 +1,81 @@
 import React, { useEffect } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button } from 'react-bootstrap'
+import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteUser, listUsers } from '../actions/userActions'
 import Message from '../components/layout/Message'
 import Loader from '../components/layout/Loader'
 
 
 
-const UserListScreen = ({ history }) => {
+const ProductListScreen = ({ history }) => {
 
     const dispatch = useDispatch()
-    const { loading, error, users } = useSelector(state => state.users)
+    const { loading, error, products } = useSelector(state => state.productList)
     const { userInfo } = useSelector(state => state.userLogin)
-    const { success: successDelete } = useSelector(state => state.userDelete)
 
     useEffect(() => {
         if (userInfo && userInfo.isAdmin) {
-            dispatch(listUsers())
+            // dispatch(listProducts())
+            console.log('list products')
         } else {
             history.push('/login')
         }
-    }, [dispatch, history, userInfo, successDelete])
+    }, [dispatch, history, userInfo])
 
     const deleteHandler = (id) => {
         if (window.confirm("Are you sure ?")) {
-            dispatch(deleteUser(id))
+            console.log('deleteproducts')
         }
+    }
+    
+    const createProductHandler = () => {
+        console.log('create a product')
     }
 
     return (
         <>
-            <h1>Users</h1>
+            <Row className='align-items-center'>
+                <Col>
+                    <h1>Products</h1>
+                </Col>
+                <Col className='text-right'>
+                    <Button className='my-3' onClick={createProductHandler}>
+                        <i className="fas fa-plus"></i>{' '}
+                        Add product
+                    </Button>
+                </Col>
+            </Row>
+
+            <h1>Products</h1>
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>NAME</th>
-                            <th>EMAIL</th>
-                            <th>ADMIN</th>
+                            <th>PRICE</th>
+                            <th>CATEGORY</th>
+                            <th>BRAND</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
-                            <tr key={user._id} >
-                                <td>{user._id}</td>
-                                <td>{user.name}</td>
-                                <td> <a href={`mailto:${user.email}`}>{user.email}</a> </td>
+                        {products.map((product) => (
+                            <tr key={product._id} >
+                                <td>{product._id}</td>
+                                <td>{product.name}</td>
+                                <td>${product.price}</td>
+                                <td>{product.category}</td>
+                                <td>{product.brand}</td>
+
                                 <td>
-                                    {user.isAdmin ? (<i style={{ color: 'green' }} className="fas fa-check"></i>)
-                                        : (<i style={{ color: 'red' }} className="fas fa-times"></i>)
-                                    }
-                                </td>
-                                <td>
-                                    <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
                                         <Button variant='light' className='btn-sm'>
                                             <i className="fas fa-edit"></i>
                                         </Button>
                                     </LinkContainer>
                                     <Button variant='danger' className='btn-sm' onClick={() => {
-                                        deleteHandler(user._id)
+                                        deleteHandler(product._id)
                                     }}>
                                         <i className="fas fa-trash"></i>
                                     </Button>
@@ -75,4 +89,4 @@ const UserListScreen = ({ history }) => {
     )
 }
 
-export default UserListScreen
+export default ProductListScreen
