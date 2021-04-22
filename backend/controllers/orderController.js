@@ -75,7 +75,6 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 //@access   private
 const getUserOrders = asyncHandler(async (req, res) => {
 
-
     const orders = await Order.find({ user: req.user._id }) // find orders with id of req.user._id
     if (orders) {
         res.json(orders)
@@ -107,4 +106,25 @@ const getOrders = asyncHandler(async (req, res) => {
 
 })
 
-export { addOrderItems, getOrderById, updateOrderToPaid, getUserOrders, getOrders, getMyOrders }
+//@route    POST /api/orders/:id/deliver
+//@desc     Update order to delivered
+//@access   private /Admin
+const updateOrderToDelivered = asyncHandler(async (req, res) => {
+
+    const order = await Order.findById(req.params.id)
+
+    if (order) {
+        order.isDelivered = true
+        order.deliveredAt = Date.now()
+
+        const updatedOrder = await order.save()
+
+        res.json(updatedOrder)
+    } else {
+        res.status(404)
+        throw new Error('Order not found')
+    }
+
+})
+
+export { addOrderItems, getOrderById, updateOrderToPaid, getUserOrders, getOrders, getMyOrders, updateOrderToDelivered }

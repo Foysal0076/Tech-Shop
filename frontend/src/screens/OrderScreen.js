@@ -1,22 +1,26 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
+import { Button, Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getOrderDetails, payOrder } from '../actions/orderActions'
+import { deliverOrder, getOrderDetails, payOrder } from '../actions/orderActions'
 import Loader from '../components/layout/Loader'
 import Message from '../components/layout/Message'
 import { PayPalButton } from "react-paypal-button-v2"
-import { ORDER_PAY_RESET } from '../actions/types'
+import { ORDER_DELIVER_RESET, ORDER_PAY_RESET } from '../actions/types'
 
-const OrderScreen = ({ match }) => {
+import moment from 'moment'
+
+const OrderScreen = ({ match, history }) => {
     const dispatch = useDispatch()
 
     const orderId = match.params.id
     const [sdkReady, setSdkReady] = useState(false)
 
+    const { userInfo } = useSelector(state => state.userLogin)
     const { order, loading, error } = useSelector(state => state.orderDetails)
     const { loading: loadingPay, success: successPay } = useSelector(state => state.orderPay) //rename loading to loadingPay
+    const { loading: loadingDeliver, success: successDeliver } = useSelector(state => state.orderDeliver) //rename loading to loadingPay
 
 
     if (!loading && order) {
@@ -31,6 +35,10 @@ const OrderScreen = ({ match }) => {
     }
 
     useEffect(() => {
+        if (!userInfo) {
+            history.push('/login')
+        }
+
         //PayPal script
         const addPayPalScript = async () => {
             const { data: clientId } = await axios.get('/api/config/paypal')
@@ -43,9 +51,12 @@ const OrderScreen = ({ match }) => {
             }
             document.body.appendChild(script)
         }
-        if (!order || successPay) {
+        if (!order || successPay || successDeliver || orderId !== order._id) {
             dispatch({
                 type: ORDER_PAY_RESET
+            })
+            dispatch({
+                type: ORDER_DELIVER_RESET
             })
             dispatch(getOrderDetails(orderId))
         } else if (!order.isPaid) {
@@ -55,12 +66,15 @@ const OrderScreen = ({ match }) => {
                 setSdkReady(true)
             }
         }
-
-    }, [dispatch, orderId, order, successPay])
+    }, [dispatch, orderId, order, successPay, successDeliver])
 
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult)
         dispatch(payOrder(orderId, paymentResult))
+    }
+
+    const deliverHandler = () => {
+        dispatch(deliverOrder(order))
     }
 
     return loading ? <Loader /> : error ? <Message variant='danger' >{error}</Message>
@@ -81,7 +95,7 @@ const OrderScreen = ({ match }) => {
                             {order.shippingAddress.postalCode},
                             {order.shippingAddress.country},
                         </p>
-                            {order.isDelivered ? <Message variant='success'>Delivered on {order.deliveredAt}</Message> :
+                            {order.isDelivered ? <Message variant='success'>Delivered on{' '}{moment(order.deliveredAt).format('MMMM Do YYYY, h:mm:ss a')}</Message> :
                                 <Message variant='danger'>Not Delivered</Message>}
                         </ListGroupItem>
                         <ListGroupItem>
@@ -90,7 +104,7 @@ const OrderScreen = ({ match }) => {
                                 <strong>Method:{' '}</strong>
                                 {order.paymentMethod}
                             </p>
-                            {order.isPaid ? <Message variant='success'>Pad on{order.paidAt}</Message> :
+                            {order.isPaid ? <Message variant='success'>Paid on{' '}{moment(order.paidAt).format('MMMM Do YYYY, h:mm:ss a')}</Message> :
                                 <Message variant='danger'>Not Paid</Message>}
                         </ListGroupItem>
                         <ListGroupItem>
@@ -147,7 +161,7 @@ const OrderScreen = ({ match }) => {
                                     <Col>${order.totalPrice}</Col>
                                 </Row>
                             </ListGroupItem>
-                            {!order.isPaid && (
+                            {!order.isPaid && !userInfo.isAdmin && (
                                 <ListGroupItem>
                                     {loadingPay && <Loader />}
                                     {!sdkReady ? <Loader /> : (
@@ -156,6 +170,17 @@ const OrderScreen = ({ match }) => {
                                             onSuccess={successPaymentHandler}
                                         />
                                     )}
+                                </ListGroupItem>
+                            )}
+                            {loadingDeliver && <Loader />}
+                            {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                                <ListGroupItem>
+                                    <Button
+                                        type='button'
+                                        className='btn btn-block'
+                                        onClick={deliverHandler}>
+                                        Mark as Delivered
+                                </Button>
                                 </ListGroupItem>
                             )}
                         </ListGroup>
