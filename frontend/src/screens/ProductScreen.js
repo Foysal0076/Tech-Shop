@@ -156,7 +156,7 @@ const ProductScreen = ({ match, history }) => {
                                                 <Button type='submit' variant='primary'>Submit Comment</Button>
                                             </Form>
                                         </h1>)
-                                        : <Message variant='info'>Please sign in to write a review</Message>}
+                                        : <Message variant='info'>Please  <Link style={{ color: 'black' }} to='/login'>Sign In</Link>to write a review </Message>}
                                 </ListGroupItem>
                             </ListGroup>
                         </Col>
