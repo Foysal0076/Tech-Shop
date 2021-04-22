@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { Container, Nav, Navbar, NavDropdown, Image } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../../actions/userActions'
@@ -17,10 +17,13 @@ const Header = () => {
 
     return (
         <header>
-            <Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect>
+            <Navbar bg="primary" variant='dark' expand="lg" collapseOnSelect>
                 <Container>
                     <LinkContainer to='/' >
-                        <Navbar.Brand>SuperShop</Navbar.Brand>
+                        <Navbar.Brand>
+                            <Image style={{ width: '48px' }} src='/images/techshop_logo.png' />
+                            <h2 className='techshop-logo d-inline mx-2' >TECHSHOP</h2>
+                        </Navbar.Brand>
                     </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">

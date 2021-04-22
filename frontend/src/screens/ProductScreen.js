@@ -10,6 +10,7 @@ import Message from '../components/layout/Message'
 
 import moment from 'moment'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../actions/types'
+import Meta from '../components/Meta'
 
 const ProductScreen = ({ match, history }) => {
     const [qty, setQty] = useState(0)
@@ -46,6 +47,7 @@ const ProductScreen = ({ match, history }) => {
             </Link>
             {loading ? <Loader /> : error ? <Message variant='danger' >{error}</Message> : (
                 <>
+                    <Meta title={product.name} />
                     <Row>
                         <Col md={6} >
                             <div>
@@ -148,7 +150,7 @@ const ProductScreen = ({ match, history }) => {
                                                 </FormGroup>
                                                 <FormGroup controllId='comment'>
                                                     <FormLabel>Comment</FormLabel>
-                                                    <FormControl as='textarea' row='3' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='Write Review'>
+                                                    <FormControl as='textarea' row='3' value={comment} required onChange={(e) => setComment(e.target.value)} placeholder='Write Review'>
                                                     </FormControl>
                                                 </FormGroup>
                                                 <Button type='submit' variant='primary'>Submit Comment</Button>

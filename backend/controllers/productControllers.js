@@ -5,7 +5,7 @@ import asyncHandler from 'express-async-handler'
 //@desc     Fetch all products
 //@access   public
 const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = 6
+    const pageSize = 8
     const page = Number(req.query.pageNumber) || 1
 
     const keyword = req.query.keyword ? {
@@ -16,7 +16,7 @@ const getProducts = asyncHandler(async (req, res) => {
     } : {}
 
     const count = await Product.countDocuments({ ...keyword })
-    const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1))
+    const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1)).sort({ createdAt: -1 })
     // res.status(401)
     // throw new Error('Not Authorized')
     res.json({ products, page, pages: Math.ceil(count / pageSize) })
@@ -117,7 +117,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     const product = await Product.findById(req.params.id)
 
-    const imageUrl = '/' + image.replace(/\\/g, '/')
+    const imageUrl = image.charAt(0) === '\/' ? image : '/' + image.replace(/\\/g, '/')
 
     if (product) {
         product.name = name || product.name

@@ -24,7 +24,7 @@ const OrderListScreen = ({ history }) => {
 
     return (
         <div>
-            <h2>My Orders</h2>
+            <h2>Product Orders</h2>
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>

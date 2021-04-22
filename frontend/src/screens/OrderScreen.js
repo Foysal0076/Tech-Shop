@@ -84,7 +84,7 @@ const OrderScreen = ({ match, history }) => {
                 <Col md={8}>
                     <ListGroup variant='flush'>
                         <ListGroupItem>
-                            <h2>Shipping</h2>
+                            <h2>Shipping Information</h2>
                             <p> <strong>Name:</strong> {order.user.name} </p>
                             <p> <a href={`mailto:${order.user.email}`}>{order.user.email}</a> </p>
 
