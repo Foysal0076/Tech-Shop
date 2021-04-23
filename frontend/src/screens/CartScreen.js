@@ -17,7 +17,7 @@ const CartScreen = ({ match, location, history }) => {
         if (productId) {
             dispatch(addToCart(productId, qty))
         }
-    }, [dispatch, qty, productId])
+    }, [dispatch, qty])
 
     const removeFromCartHandler = (id) => {
         dispatch(removeFromCart(id))
@@ -82,8 +82,9 @@ const CartScreen = ({ match, location, history }) => {
                             <Button
                                 type='button'
                                 className='btn-block'
-                                disbled={cartItems.length === 0 ? 'true' : 'false'}
-                                onClick={onCheckOutClickHandler}>
+                                onClick={onCheckOutClickHandler}
+                                disabled={cartItems.length === 0}
+                            >
                                 Proceed to Checkout
                             </Button>
                         </ListGroupItem>

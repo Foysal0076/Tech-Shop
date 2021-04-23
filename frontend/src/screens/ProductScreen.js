@@ -13,7 +13,7 @@ import { PRODUCT_CREATE_REVIEW_RESET } from '../actions/types'
 import Meta from '../components/Meta'
 
 const ProductScreen = ({ match, history }) => {
-    const [qty, setQty] = useState(0)
+    const [qty, setQty] = useState(1)
     const [rating, setRating] = useState(0)
     const [comment, setComment] = useState('')
 
@@ -32,7 +32,7 @@ const ProductScreen = ({ match, history }) => {
     }, [dispatch, match.params.id, successCreateReview])
 
     const addToCartHandler = () => {
-        history.push(`/cart/${match.params.id}?qty=${qty === 0 ? 1 : qty}`)
+        history.push(`/cart/${match.params.id}?qty=${qty}`)
     }
 
     const onSubmitHandler = (e) => {
